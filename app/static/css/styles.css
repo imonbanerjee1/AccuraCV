@@ -1,0 +1,11 @@
+body {
+    padding-top: 20px;
+}
+
+.container {
+    max-width: 600px;
+}
+
+h1 {
+    text-align: center;
+}
