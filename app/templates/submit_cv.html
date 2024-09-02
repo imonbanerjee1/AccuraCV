@@ -5,22 +5,34 @@
 {% block title %}Submit CV{% endblock %}
 
 {% block content %}
-    <h1>Submit CV Element for Verification</h1>
-    <form method="POST" action="/submit_cv" class="mt-4">
-        <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" class="form-control" id="name" name="name" required>
-        </div>
-        <div class="form-group">
-            <label for="element">CV Element:</label>
-            <input type="text" class="form-control" id="element" name="element" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h1 class="card-title text-center mb-4">Submit CV Element for Verification</h1>
+                        <form method="POST" action="/submit_cv">
+                            <div class="form-group">
+                                <label for="name">Name:</label>
+                                <input type="text" class="form-control rounded-pill" id="name" name="name" required>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="element">CV Element:</label>
+                                <input type="text" class="form-control rounded-pill" id="element" name="element" required>
+                            </div>
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary btn-block rounded-pill">Submit</button>
+                            </div>
+                        </form>
 
-    {% if tx_hash %}
-        <div class="alert alert-success mt-3">
-            Transaction Hash: <strong>{{ tx_hash }}</strong>
+                        {% if tx_hash %}
+                            <div class="alert alert-success mt-4 text-center rounded-pill">
+                                Transaction Hash: <strong>{{ tx_hash }}</strong>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
-    {% endif %}
+    </div>
 {% endblock %}
