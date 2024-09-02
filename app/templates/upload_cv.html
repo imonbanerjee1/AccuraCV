@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload CV{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Upload CV</h2>
+                    <form action="/upload_cv" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="file">Select CV (PDF):</label>
+                            <input type="file" class="form-control rounded-pill" id="file" name="file" required>
+                        </div>
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-block rounded-pill">Upload</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

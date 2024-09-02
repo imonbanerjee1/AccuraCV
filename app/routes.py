@@ -1,6 +1,9 @@
 from flask import request, jsonify,render_template
 from app import app
 from run import web3
+from werkzeug.utils import secure_filename
+import fitz
+import os
 
 contract_abi = [
     {
@@ -108,6 +111,47 @@ contract = web3.eth.contract(address=contract_address, abi=contract_abi)
 def index():
     return render_template('index.html')
 
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pdf'}
+
+def process_pdf(filepath):
+    doc = fitz.open(filepath)
+    text = ""
+    for page in doc:
+        text += page.get_text()
+    doc.close()
+    return extract_cv_elements(text)
+
+def extract_cv_elements(text):
+    lines = text.split('\n')
+    elements = {
+        "personal_info": lines[0] if len(lines) > 0 else "",
+        "education": lines[1] if len(lines) > 1 else "",
+        "experience": lines[2] if len(lines) > 2 else "",
+        "skills": lines[3] if len(lines) > 3 else ""
+    }
+    return elements
+
+@app.route('/upload_cv', methods=['GET', 'POST'])
+def upload_cv():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file part'}), 400
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'No selected file'}), 400
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            
+            cv_elements = process_pdf(filepath)
+            
+            return render_template('cv_elements.html', elements=cv_elements)
+    return render_template('upload_cv.html')
+
+
 @app.route('/submit_cv', methods=['GET', 'POST'])
 def submit_cv():
     if request.method == 'POST':
@@ -137,11 +181,8 @@ def check_status():
         element = request.form.get('element')
         
         try:
-            # Call the contract function to check the status
             status = contract.functions.checkVerificationStatus(name, element).call()
-            
-            # Handle the case where the CV element does not exist
-            if status is None or status == False:
+            if status is None:
                 message = "Invalid item"
             else:
                 message = f"Verification Status for {element} under the name {name} is {status}."

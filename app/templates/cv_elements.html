@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}CV Elements{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Extracted CV Elements</h2>
+    <div class="row">
+        <!-- Personal Information Card -->
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    Personal Information
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ elements.personal_info }}</p>
+                </div>
+            </div>
+        </div>
+        <!-- Education Card -->
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    Education
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ elements.education }}</p>
+                </div>
+            </div>
+        </div>
+        <!-- Experience Card -->
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    Experience
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ elements.experience }}</p>
+                </div>
+            </div>
+        </div>
+        <!-- Skills Card -->
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    Skills
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ elements.skills }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
