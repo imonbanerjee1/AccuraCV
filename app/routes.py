@@ -111,39 +111,43 @@ def index():
 @app.route('/submit_cv', methods=['GET', 'POST'])
 def submit_cv():
     if request.method == 'POST':
-        data = request.json
-        name = data.get('name')
-        element = data.get('element')
+        name = request.form['name']
+        element = request.form['element']
         tx_hash = contract.functions.submitCVElement(name, element).transact()
         web3.eth.wait_for_transaction_receipt(tx_hash)
-        return jsonify({'message': 'CV element submitted for verification', 'tx_hash': tx_hash.hex()}), 200
+        return render_template('submit_cv.html', tx_hash=tx_hash.hex())
     return render_template('submit_cv.html')
 
 @app.route('/verify_cv', methods=['GET', 'POST'])
 def verify_cv():
     if request.method == 'POST':
-        data = request.json
-        name = data.get('name')
-        element = data.get('element')
-        verified = data.get('verified')
+        name = request.form['name']
+        element = request.form['element']
+        verified = request.form['verified'] == 'true'
         tx_hash = contract.functions.verifyCVElement(name, element, verified).transact()
         web3.eth.wait_for_transaction_receipt(tx_hash)
-        return jsonify({'message': 'CV element verification status updated', 'tx_hash': tx_hash.hex()}), 200
+        return render_template('verify_cv.html', tx_hash=tx_hash.hex())
     return render_template('verify_cv.html')
 
-@app.route('/check_status', methods=['GET'])
+@app.route('/check_status', methods=['GET', 'POST'])
 def check_status():
-    name = request.args.get('name')
-    element = request.args.get('element')
+    if request.method == 'POST':
+        # Get form data
+        name = request.form.get('name')
+        element = request.form.get('element')
+        
+        try:
+            # Call the contract function to check the status
+            status = contract.functions.checkVerificationStatus(name, element).call()
+            
+            # Handle the case where the CV element does not exist
+            if status is None or status == False:
+                message = "Invalid item"
+            else:
+                message = f"Verification Status for {element} under the name {name} is {status}."
+            print(message)
+            return render_template('check_status.html', status=status, message=message, name=name, element=element)
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
     
-    # Ensure that both 'name' and 'element' are provided
-    if not name or not element:
-        return jsonify({'error': 'Missing required parameters'}), 400
-    
-    try:
-        # Call the smart contract function with the correct types
-        status = contract.functions.checkVerificationStatus(name, element).call()
-        return jsonify({'name': name, 'element': element, 'status': status}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
+    return render_template('check_status.html', status=None, message=None)

@@ -1,35 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify CV</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <h1 class="mt-5">Verify CV Element</h1>
-        <form id="verifyCvForm">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" required>
-            </div>
-            <div class="form-group">
-                <label for="element">Element</label>
-                <input type="text" class="form-control" id="element" required>
-            </div>
-            <div class="form-group">
-                <label for="verified">Verified</label>
-                <select class="form-control" id="verified" required>
-                    <option value="true">True</option>
-                    <option value="false">False</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Verify</button>
-        </form>
-        <div id="response" class="mt-3"></div>
-    </div>
-    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
-</body>
-</html>
+<!-- app/templates/verify_cv.html -->
+
+{% extends "base.html" %}
+
+{% block title %}Verify CV{% endblock %}
+
+{% block content %}
+    <h1>Verify CV Element</h1>
+    <form method="POST" action="/verify_cv" class="mt-4">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="element">CV Element:</label>
+            <input type="text" class="form-control" id="element" name="element" required>
+        </div>
+        <div class="form-group">
+            <label for="verified">Verified:</label>
+            <select class="form-control" id="verified" name="verified" required>
+                <option value="true">True</option>
+                <option value="false">False</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Verify</button>
+    </form>
+
+    {% if tx_hash %}
+        <div class="alert alert-success mt-3">
+            Transaction Hash: <strong>{{ tx_hash }}</strong>
+        </div>
+    {% endif %}
+{% endblock %}
